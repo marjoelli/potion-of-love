@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Potion of Love</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      background-color: #fff8f4;
+      color: #d36c6c;
+      padding: 2em;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 0.2em;
+    }
+    .colors {
+      margin: 1em auto;
+    }
+    .color {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin: 0.5em;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: transform 0.2s;
+    }
+    .color:hover {
+      transform: scale(1.1);
+    }
+    .selected {
+      border: 3px solid #555;
+    }
+    #potion {
+      margin: 2em auto;
+      width: 100px;
+      height: 150px;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(30% 0%, 70% 0%, 90% 100%, 10% 100%);
+      border: 4px solid #ccc;
+    }
+    #liquid {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0%;
+      background: pink;
+      transition: height 0.3s ease, background 0.3s ease;
+    }
+    #result {
+      margin-top: 1em;
+      font-weight: bold;
+    }
+    button {
+      background-color: #e6a4b4;
+      border: none;
+      padding: 0.5em 1em;
+      font-size: 1em;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    button:hover {
+      background-color: #ce8fa3;
+    }
+  </style>
+</head>
+<body>
+  <h1>💖 Potion of Love 💖</h1>
+  <p>Pilih maksimal 3 warna pastel untuk mencampur cinta!</p>
+  <div class="colors">
+    <div class="color" style="background-color: #fff0f5" data-color="white"></div>
+    <div class="color" style="background-color: #ffc0cb" data-color="red"></div>
+    <div class="color" style="background-color: #add8e6" data-color="blue"></div>
+    <div class="color" style="background-color: #fffacd" data-color="yellow"></div>
+  </div>
+  <button onclick="resetPotion()">Reset Potion</button>
+  <div id="potion">
+    <div id="liquid"></div>
+  </div>
+  <div id="result">Belum ada campuran~</div>
+
+  <script>
+    const colors = document.querySelectorAll('.color');
+    const selectedColors = [];
+    const liquid = document.getElementById('liquid');
+    const result = document.getElementById('result');
+
+    const potionNames = {
+      "white": "White Whisper 💕",
+      "red": "Heart's Flame ❤",
+      "blue": "Blue Moon Kiss 🌙",
+      "yellow": "Sunshine Smile ☀",
+      "red,white": "Sweetheart Swirl 🍬",
+      "blue,white": "Gentle Breeze 💨",
+      "white,yellow": "Golden Glow ✨",
+      "blue,red": "Love Potion No. 9 💘",
+      "red,yellow": "Candy Crush 🍭",
+      "blue,yellow": "Dreamy Day 💭",
+      "blue,red,white": "Triple Love Spell 💖",
+      "red,white,yellow": "Sunset Embrace 🌅",
+      "blue,white,yellow": "Pastel Harmony 🎶",
+      "blue,red,yellow": "Rainbow Heart 🌈"
+    };
+
+    const colorMap = {
+      "white": "#fff0f5",
+      "red": "#ffc0cb",
+      "blue": "#add8e6",
+      "yellow": "#fffacd",
+      "red,white": "#fbb1c1",
+      "blue,white": "#dae6f2",
+      "white,yellow": "#fdf5d6",
+      "blue,red": "#c3b0d9",
+      "red,yellow": "#ffe4d4",
+      "blue,yellow": "#d6f2f2",
+      "blue,red,white": "#f2d0e6",
+      "red,white,yellow": "#fbe1c8",
+      "blue,white,yellow": "#e2f1df"
+    };
+
+    colors.forEach(c => {
+      c.addEventListener('click', () => {
+        const color = c.dataset.color;
+        if (selectedColors.includes(color)) {
+          selectedColors.splice(selectedColors.indexOf(color), 1);
+          c.classList.remove('selected');
+        } else if (selectedColors.length < 3) {
+          selectedColors.push(color);
+          c.classList.add('selected');
+        }
+        updatePotion();
+      });
+    });
+
+    function resetPotion() {
+      selectedColors.length = 0;
+      colors.forEach(c => c.classList.remove('selected'));
+      liquid.style.height = '0%';
+      result.textContent = 'Belum ada campuran~';
+    }
+
+    function updatePotion() {
+      if (selectedColors.length === 0) {
+        liquid.style.height = '0%';
+        result.textContent = 'Belum ada campuran~';
+        return;
+      }
+      if (selectedColors.length > 3) {
+        result.textContent = 'Campuran gagal: terlalu banyak warna! ❌';
+        liquid.style.height = '80%';
+        liquid.style.background = 'gray';
+        return;
+      }
+
+      const sorted = [...selectedColors].sort();
+      const key = sorted.join(',');
+
+      if (key === "blue,red,yellow") {
+        liquid.style.height = '80%';
+        liquid.style.background = "linear-gradient(to top, #ffc0cb, #ffdab9, #add8e6, #90ee90, #dda0dd)";
+        result.textContent = potionNames[key];
+        return;
+      }
+
+      if (potionNames[key]) {
+        liquid.style.height = '80%';
+        liquid.style.background = colorMap[key] || 'pink';
+        result.textContent = potionNames[key];
+      } else {
+        liquid.style.height = '80%';
+        liquid.style.background = 'gray';
+        result.textContent = 'Campuran tidak tersedia~';
+      }
+    }
+  </script>
+</body>
+</html>
